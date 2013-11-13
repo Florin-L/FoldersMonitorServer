@@ -1,0 +1,66 @@
+import "wtypes.idl";
+import "Unknwn.idl";
+
+[
+	uuid(CEDC3FC3-3451-43CF-8A0A-8A18FBF82028),
+	version(1.0)
+]
+typedef enum NotificationFlags
+{
+	NONE = 0,
+	CHANGE_NAME = 2,
+	CHANGE_ATTRIBUTES = 4,
+	CHANGE_LAST_WRITE = 8
+} NotificationFlags;
+
+//cpp_quote("enum __declspec(uuid(\"{CEDC3FC3-3451-43CF-8A0A-8A18FBF82028}\")) NotificationFlags;")
+
+[
+	object,
+	uuid(EAD6832B-72F1-417B-8606-6139245791F7),
+	pointer_default(unique),
+	oleautomation
+]
+interface IFoldersMonitor : IUnknown
+{
+	[id(1)] HRESULT Start(int nMaxTasksCount);
+	[id(2)] HRESULT Stop();
+	[id(3)] HRESULT CreateTask([in] BSTR folderName, [in] DWORD flags, [out, retval] BSTR *taskId);
+	[id(4)] HRESULT RemoveTask([in] BSTR taskId, [out] int *error);
+	[id(5)] HRESULT StartTask([in] BSTR taskId, [out] int *error);
+	[id(6)] HRESULT StopTask([in] BSTR taskId, [out] int *error);
+	//[id(7)] HRESULT UpdateNotificationFlags([in] BSTR taskId, [in] NotificationFlags setFlags, [in] NotificationFlags resetFlags);
+	//[id(8)] HRESULT GetNotificationFlags([in] BSTR taskId, [out, retval] NotificationFlags *flags);
+}
+
+[
+	uuid(231A27E0-55B9-44A2-9025-F82B8ED5F40F),
+	pointer_default(unique),
+	oleautomation
+]
+interface IFoldersMonitorEvents : IUnknown
+{
+	import "objidl.idl";
+
+	[id(1)] HRESULT OnNameChanged([in] int action, [in] BSTR fileName);
+	[id(2)] HRESULT OnAttributesChanged([in] int action, [in] BSTR fileName);
+	[id(3)] HRESULT OnLastWriteChanged([in] int action, [in] BSTR fileName);
+}
+
+[
+	uuid("17F8FB77-23E3-4747-9CBA-BFA61B3C6F78")
+]
+library FoldersMonitorLib
+{
+	importlib("stdole32.tlb");
+
+	[
+		uuid(8864BFA3-4D7D-4147-A54E-2C23C22D76D4),
+		helpstring("CoFoldersMonitor object") 
+	]
+	coclass CoFoldersMonitor
+	{
+		[default] interface IFoldersMonitor;
+		[source, default] interface IFoldersMonitorEvents;
+	}
+}

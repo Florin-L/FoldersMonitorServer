@@ -1,0 +1,12 @@
+﻿Build started 03/11/2013 18:53:16.
+     1>Project "D:\Projects\Com\FoldersMonitorServer\Proxy\Proxy.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         Proxy.vcxproj -> D:\Projects\Com\FoldersMonitorServer\x64\Debug\Proxy.dll
+       PostBuildEvent:
+         regsvr32 /s D:\Projects\Com\FoldersMonitorServer\x64\Debug\Proxy.dll
+         :VCEnd
+     1>Done Building Project "D:\Projects\Com\FoldersMonitorServer\Proxy\Proxy.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.48
