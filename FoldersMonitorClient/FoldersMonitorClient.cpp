@@ -9,8 +9,9 @@
 #include <ObjIdl.h>
 #include <comdef.h>
 #include <comip.h>
+#include <memory>
 #include <iostream>
-#include <thread>
+#include "Sink.h"
 
 #include "..\FoldersMonitorServer\FoldersMonitorServer_h.h"
 #include "..\FoldersMonitorServer\FoldersMonitorServer_i.c"
@@ -44,6 +45,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	_ASSERT(SUCCEEDED(hr));
 	pUnk->AddRef();
+
+	//
+	IConnectionPointContainerPtr pcpc;
+	hr = pUnk->QueryInterface<IConnectionPointContainer>(&pcpc);
+	_ASSERT(SUCCEEDED(hr));
+
+	std::unique_ptr<Sink> sink(new Sink());
+	DWORD dwCookie = 0;
+
+	IConnectionPointPtr pcp;
+	hr = pcpc->FindConnectionPoint(IID_IFoldersMonitorEvents, &pcp);
+	_ASSERT(SUCCEEDED(hr));
+
+	pcp->Advise((IUnknown*) sink.get(), &dwCookie);
 
 	//
 	IFoldersMonitorPtr pFoldersMonitor;
@@ -136,6 +151,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//
 	::SysFreeString(taskId);
+
+	//
+	pcp->Unadvise(dwCookie);
+	pcp = nullptr;
 
 	//
 	//hr = pGlobalItfTable->RevokeInterfaceFromGlobal(cookie);

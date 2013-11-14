@@ -211,6 +211,28 @@ namespace watch {
 			return m_threadId; 
 		}
 
+		//
+		struct INotifications
+		{
+			virtual void OnFileNameChanged(int action, const std::wstring &fileName) = 0;
+		};
+
+		void SetListener(INotifications *listener)
+		{
+			if (!listener)
+				return;
+
+			if (m_listener)
+				return;
+
+			m_listener = listener;
+		}
+
+		void UnSetListener()
+		{
+			m_listener = nullptr;
+		}
+
 	private:
 		//
 		HANDLE											m_hThread;
@@ -219,6 +241,8 @@ namespace watch {
 		Worker											*m_worker;
 		//
 		ThreadSafeQueue<DirectoryChangeNotification>	m_notifications;
+
+		INotifications									*m_listener;
 	};
 
 } // namespace watch

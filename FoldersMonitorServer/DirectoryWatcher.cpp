@@ -146,6 +146,7 @@ namespace watch {
 		, m_threadId(0)
 		, m_worker(nullptr)
 		, m_notifications(maxChanges)
+		, m_listener(nullptr)
 	{
 		m_worker = new Worker(this);
 	}
@@ -161,7 +162,8 @@ namespace watch {
 	void DirectoryChanges::Init()
 	{
 		// kick off the working thread
-		m_hThread = (HANDLE) _beginthreadex(nullptr, 0, 
+		m_hThread = (HANDLE) _beginthreadex(nullptr, 
+			0, 
 			Worker::ThreadStartProc,
 			m_worker,
 			0,
@@ -189,9 +191,12 @@ namespace watch {
 		if (!m_hThread)
 			Init();
 
-		Request *request = new Request(m_worker,
-			dirName, watchSubtree, notifFilter, buffSize);
-
+		Request *request = new Request(m_worker, 
+			dirName, 
+			watchSubtree, 
+			notifFilter, 
+			buffSize);
+		
 		::QueueUserAPC(Worker::AddDirectoryProc, m_hThread, (ULONG_PTR) request);
 	}
 
@@ -204,6 +209,9 @@ namespace watch {
 
 		action = pair.first;
 		fileName = pair.second;
+
+		if (m_listener)
+			m_listener->OnFileNameChanged(action, fileName);
 
 		return true;
 	}

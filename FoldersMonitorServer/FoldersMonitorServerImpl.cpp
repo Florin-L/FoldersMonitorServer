@@ -189,7 +189,7 @@ STDMETHODIMP CoFoldersMonitor::FindConnectionPoint(const IID &riid, IConnectionP
 	}
 
 	if (*ppCP)
-		reinterpret_cast<IUnknown*>(ppCP)->AddRef();
+		reinterpret_cast<IUnknown*>(*ppCP)->AddRef();
 
 	return S_OK;
 }
@@ -208,7 +208,7 @@ unsigned int CoFoldersMonitor::WorkerThreadProc(LPVOID args)
 		switch (rc)
 		{
 		case WAIT_OBJECT_0:
-			com::Trace(L"[%s] : stop event was signaled; leave the worker thread\n", __FUNCTIONW__);
+			com::Trace(L"[%s] : stop event was signaled; get out the worker thread\n", __FUNCTIONW__);
 			return 0;
 
 		case WAIT_OBJECT_0 + 1:
@@ -248,6 +248,7 @@ STDMETHODIMP CoFoldersMonitor::Start(int maxTasksCount)
 		return E_INVALIDARG;
 
 	m_watcher.reset(new watch::DirectoryChanges(maxTasksCount));
+	m_watcher->SetListener(static_cast<watch::DirectoryChanges::INotifications*>(this));
 
 	// kick off the working thread
 	m_hWorkerThread = (HANDLE) _beginthreadex(nullptr, 0, 
@@ -263,6 +264,8 @@ STDMETHODIMP CoFoldersMonitor::Start(int maxTasksCount)
 STDMETHODIMP CoFoldersMonitor::Stop()
 {
 	_ASSERT(m_hStopWorker);
+
+	m_watcher->UnSetListener();
 
 	if (m_hStopWorker)
 		::SetEvent(m_hStopWorker);
@@ -406,6 +409,14 @@ STDMETHODIMP CoFoldersMonitor::StopTask(__in BSTR taskId, __out int *error)
 //{
 //	return E_NOTIMPL;
 //}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+
+void CoFoldersMonitor::OnFileNameChanged(int action, const std::wstring & fileName)
+{
+	Fire_OnNameChanged(action, ::SysAllocString(fileName.c_str()));
+}
 
 ///
 ///

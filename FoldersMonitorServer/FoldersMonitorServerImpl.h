@@ -13,16 +13,41 @@
 	OuterClassName * This() {\
 		return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
 	}\
-	\
-	HRESULT __stdcall QueryInterface(REFIID riid, void **ppv) {\
+	STDMETHODIMP QueryInterface(REFIID riid, void **ppv) {\
 		return This()->QueryInterface(riid, ppv);\
 	}\
-	ULONG __stdcall AddRef() {\
+	STDMETHODIMP_(ULONG) AddRef() {\
 		return This()->AddRef();\
 	}\
-	ULONG __stdcall Release() {\
+	STDMETHODIMP_(ULONG) Release() {\
 		return This()->Release();\
 	}\
+
+////////////////////////////////////////////////////////////////////////////////
+#define IMPLEMENT_CP_UNKNOWN(OuterClassName, DataMemberName)\
+	OuterClassName * This() {\
+		return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
+	}\
+	STDMETHODIMP QueryInterface(REFIID riid, void **ppv) {\
+		if (IsEqualIID(IID_IUnknown, riid) || IsEqualIID(IID_IConnectionPoint, riid))\
+		{\
+			*ppv = static_cast<IConnectionPoint*>(this);\
+		}\
+		else\
+		{\
+			*ppv = nullptr;\
+			return E_NOINTERFACE;\
+		}\
+		reinterpret_cast<IUnknown*>(*ppv)->AddRef();\
+		return S_OK;\
+	}\
+	STDMETHODIMP_(ULONG) AddRef() {\
+		return This()->AddRef();\
+	}\
+	STDMETHODIMP_(ULONG) Release() {\
+		return This()->Release();\
+	}\
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // CoFoldersMonitor : the implementation of the service
@@ -32,6 +57,7 @@ class CoFoldersMonitor
 	, public IFoldersMonitor
 	, public IExternalConnection
 	, public IConnectionPointContainer
+	, public watch::DirectoryChanges::INotifications
 {
 public:
 	/// the delegating IUnknown
@@ -88,6 +114,11 @@ public:
 	//STDMETHODIMP UpdateNotificationFlags(BSTR taskId, NotificationFlags setFlags, NotificationFlags resetFlags);
 	//STDMETHODIMP GetNotificationFlags(BSTR taskId, NotificationFlags *flags);
 
+	/// watch::DirectoryChanges::INotifications
+	///
+	void OnFileNameChanged(int action, const std::wstring &fileName);
+
+
 protected:
 	virtual ~CoFoldersMonitor();
 
@@ -118,21 +149,21 @@ private:
 
 		////////////////////////////////////////////////////////////////////////
 		// IUnknown
-		IMPLEMENT_COMPOSITE_UNKNOWN(CoFoldersMonitor, CPFolderMonitorEvents, m_cpEvents);
+		IMPLEMENT_CP_UNKNOWN(CoFoldersMonitor, m_cpEvents);
 
 		/////////////////////
 		// IConnectionPoint
 
-		virtual HRESULT STDMETHODCALLTYPE GetConnectionInterface(/* [out] */ IID *pIID);
+		STDMETHODIMP GetConnectionInterface(/* [out] */ IID *pIID);
 
-		virtual HRESULT STDMETHODCALLTYPE GetConnectionPointContainer(/* [out] */ IConnectionPointContainer **ppCPC);
+		STDMETHODIMP GetConnectionPointContainer(/* [out] */ IConnectionPointContainer **ppCPC);
 
-		virtual HRESULT STDMETHODCALLTYPE Advise(/* [in] */ IUnknown *pUnkSink,
+		STDMETHODIMP Advise(/* [in] */ IUnknown *pUnkSink,
 			/* [out] */ DWORD *pdwCookie);
 
-		virtual HRESULT STDMETHODCALLTYPE Unadvise(/* [in] */ DWORD dwCookie);
+		STDMETHODIMP Unadvise(/* [in] */ DWORD dwCookie);
 
-		virtual HRESULT STDMETHODCALLTYPE EnumConnections(/* [out] */ IEnumConnections ** /*ppEnum*/)
+		STDMETHODIMP EnumConnections(/* [out] */ IEnumConnections ** /*ppEnum*/)
 		{
 			return E_NOTIMPL;
 		}
