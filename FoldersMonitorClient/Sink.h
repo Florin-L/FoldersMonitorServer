@@ -22,7 +22,7 @@ public:
 	}
 
 	// IUnknown
-	HRESULT __stdcall QueryInterface(REFIID riid, void **ppv)
+	STDMETHODIMP QueryInterface(REFIID riid, void **ppv)
 	{
 		if (IsEqualIID(IID_IUnknown, riid) || IsEqualIID(IID_IFoldersMonitorEvents, riid))
 		{
@@ -38,13 +38,13 @@ public:
 		return S_OK;
 	}
 
-	ULONG __stdcall AddRef()
+	STDMETHODIMP_(ULONG) AddRef()
 	{
 		::InterlockedIncrement(&m_cRef);
 		return m_cRef;
 	}
 	
-	ULONG __stdcall Release()
+	STDMETHODIMP_(ULONG) Release()
 	{
 		::InterlockedDecrement(&m_cRef);
 		if (m_cRef == 0)
@@ -59,20 +59,20 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	// IFoldersMonitorEvents
     public:
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnNameChanged(/* [in] */ int action,
+		virtual /* [id] */ STDMETHODIMP OnNameChanged(/* [in] */ int action,
             /* [in] */ BSTR fileName)
 		{
 			wcout << L"OnNameChanged: " << action << L" / " << _bstr_t(fileName, false) << endl;
 			return S_OK;
 		}
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnAttributesChanged(/* [in] */ int action,
+        virtual /* [id] */ STDMETHODIMP OnAttributesChanged(/* [in] */ int action,
             /* [in] */ BSTR fileName)
 		{
 			return S_OK;
 		}
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnLastWriteChanged(/* [in] */ int action,
+        virtual /* [id] */ STDMETHODIMP OnLastWriteChanged(/* [in] */ int action,
             /* [in] */ BSTR fileName)
 		{
 			return S_OK;
