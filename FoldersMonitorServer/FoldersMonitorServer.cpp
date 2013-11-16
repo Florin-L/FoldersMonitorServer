@@ -14,13 +14,15 @@ bool g_enableTraces = true;
 ///
 void ModuleAddRef()
 {
-	::CoAddRefServerProcess();
+	ULONG cRef = ::CoAddRefServerProcess();
+	com::Trace(L"[%s] : global server reference counter = %d", __FUNCTIONW__, cRef);
 }
 
 ///
 void ModuleReleaseRef()
 {
-	::CoReleaseServerProcess();
+	ULONG cRef = ::CoReleaseServerProcess();
+	com::Trace(L"[%s] : global server reference counter = %d", __FUNCTIONW__, cRef);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
