@@ -265,8 +265,9 @@ namespace com { namespace base {
 	HRESULT RegisterServer(HMODULE hModule,						// DLL module handle
 		const CLSID &clsid,					// Class ID
 		const std::wstring &friendlyName,	// Friendly Name
-		const std::wstring &verIndProgID,	// Programmatic
-		const std::wstring &progID,			//   IDs
+		const std::wstring &verIndProgID,	// Version independent ID
+		const std::wstring &progID,			// Prog ID
+		const std::wstring &threadingModel,	// The threading model
 		const GUID &libid)					// Library ID
 	{
 		// Get server location.
@@ -302,23 +303,30 @@ namespace com { namespace base {
 
 		// Add the server filename subkey under the CLSID key.
 #ifdef _OUTPROC_SERVER_
-		SetKeyAndValue(sKey, L"LocalServer32", sModulePath) ;
+		SetKeyAndValue(sKey, L"LocalServer32", sModulePath);
 #else
-		SetKeyAndValue(sKey, L"InprocServer32", sModulePath) ;
+		SetKeyAndValue(sKey, L"InprocServer32", sModulePath);
 #endif
 
 		// Add the ProgID subkey under the CLSID key.
-		SetKeyAndValue(sKey, L"ProgID", progID) ;
+		SetKeyAndValue(sKey, L"ProgID", progID);
 
 		// Add the version-independent ProgID subkey under CLSID key.
-		SetKeyAndValue(sKey, L"VersionIndependentProgID", verIndProgID) ;
+		SetKeyAndValue(sKey, L"VersionIndependentProgID", verIndProgID);
+
+		// Add the threading model subkey.
+#ifdef _OUTPROC_SERVER_
+		SetKeyAndValue(sKey, L"LocalServer32\\ThreadingModel", threadingModel);
+#else
+		SetKeyAndValue(sKey, L"InprocServer32\\ThreadingModel", threadingModel);
+#endif
 
 		// Add the Type Library ID subkey under the CLSID key.
 		std::wstring sLIBID;
 		sLIBID.reserve(GUID_STRING_SIZE);
 
 		GUIDtoStr(libid, sLIBID);
-		SetKeyAndValue(sKey, L"TypeLib", sLIBID) ;
+		SetKeyAndValue(sKey, L"TypeLib", sLIBID);
 
 		LPCWSTR tlbPath = GetTypeLibPath(sModulePath.c_str());
 		_ASSERT(tlbPath && *tlbPath);
@@ -328,13 +336,13 @@ namespace com { namespace base {
 		tlbPath = nullptr;
 
 		// Add the version-independent ProgID subkey under HKEY_CLASSES_ROOT.
-		SetKeyAndValue(verIndProgID, kEmptyString, friendlyName) ; 
-		SetKeyAndValue(verIndProgID, L"CLSID", sCLSID) ;
-		SetKeyAndValue(verIndProgID, L"CurVer", progID) ;
+		SetKeyAndValue(verIndProgID, kEmptyString, friendlyName); 
+		SetKeyAndValue(verIndProgID, L"CLSID", sCLSID);
+		SetKeyAndValue(verIndProgID, L"CurVer", progID);
 
 		// Add the versioned ProgID subkey under HKEY_CLASSES_ROOT.
-		SetKeyAndValue(progID, kEmptyString, friendlyName) ; 
-		SetKeyAndValue(progID, L"CLSID", sCLSID) ;
+		SetKeyAndValue(progID, kEmptyString, friendlyName); 
+		SetKeyAndValue(progID, L"CLSID", sCLSID);
 
 		return S_OK ;
 	}

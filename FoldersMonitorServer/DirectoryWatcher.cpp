@@ -72,7 +72,7 @@ namespace watch {
 			&m_buffer[0],						// read results buffer
 			(DWORD) m_buffer.size(),			// length of buffer
 			m_watchSubtree,						// monitoring option
-			FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_FILE_NAME,        // filter conditions
+			m_flags,							// filter conditions
 			&cBytes,							// bytes returned
 			&m_overlapped,						// overlapped buffer
 			&NotificationCompletion);			// completion routine
@@ -211,7 +211,7 @@ namespace watch {
 		fileName = pair.second;
 
 		if (m_listener)
-			m_listener->OnFileNameChanged(action, fileName);
+			m_listener->OnEvent(action, fileName);
 
 		return true;
 	}

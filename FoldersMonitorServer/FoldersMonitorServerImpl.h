@@ -11,41 +11,41 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define IMPLEMENT_COMPOSITE_UNKNOWN(OuterClassName, InnerClassName, DataMemberName)\
 	OuterClassName * This() {\
-		return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
+	return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
 	}\
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppv) {\
-		return This()->QueryInterface(riid, ppv);\
+	return This()->QueryInterface(riid, ppv);\
 	}\
 	STDMETHODIMP_(ULONG) AddRef() {\
-		return This()->AddRef();\
+	return This()->AddRef();\
 	}\
 	STDMETHODIMP_(ULONG) Release() {\
-		return This()->Release();\
+	return This()->Release();\
 	}\
 
 ////////////////////////////////////////////////////////////////////////////////
 #define IMPLEMENT_CP_UNKNOWN(OuterClassName, DataMemberName)\
 	OuterClassName * This() {\
-		return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
+	return (OuterClassName *)((BYTE *)this - FIELD_OFFSET(OuterClassName, DataMemberName));\
 	}\
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppv) {\
-		if (IsEqualIID(IID_IUnknown, riid) || IsEqualIID(IID_IConnectionPoint, riid))\
+	if (IsEqualIID(IID_IUnknown, riid) || IsEqualIID(IID_IConnectionPoint, riid))\
 		{\
-			*ppv = static_cast<IConnectionPoint*>(this);\
+		*ppv = static_cast<IConnectionPoint*>(this);\
 		}\
 		else\
 		{\
-			*ppv = nullptr;\
-			return E_NOINTERFACE;\
+		*ppv = nullptr;\
+		return E_NOINTERFACE;\
 		}\
 		reinterpret_cast<IUnknown*>(*ppv)->AddRef();\
 		return S_OK;\
 	}\
 	STDMETHODIMP_(ULONG) AddRef() {\
-		return This()->AddRef();\
+	return This()->AddRef();\
 	}\
 	STDMETHODIMP_(ULONG) Release() {\
-		return This()->Release();\
+	return This()->Release();\
 	}\
 
 
@@ -116,16 +116,14 @@ public:
 
 	/// watch::DirectoryChanges::INotifications
 	///
-	void OnFileNameChanged(int action, const std::wstring &fileName);
-
+	void OnEvent(int action, const std::wstring &fileName);
 
 protected:
 	virtual ~CoFoldersMonitor();
 
 private:
-	STDMETHODIMP Fire_OnNameChanged(__in int action, __in BSTR fileName);
-	STDMETHODIMP Fire_OnAttributesChanged(__in int action, __in BSTR fileName);
-	STDMETHODIMP Fire_OnLastWriteChanged(__in int action, __in BSTR fileName);
+	///
+	STDMETHODIMP Fire_OnChanged(__in int action, __in BSTR fileName);
 
 	///
 	static unsigned int WINAPI WorkerThreadProc(LPVOID args);

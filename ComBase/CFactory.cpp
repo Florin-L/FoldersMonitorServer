@@ -10,6 +10,11 @@
 #include "Registry.h"
 #include "CFactory.h"
 
+////////////////////////////////////////////////////////////////////////////////
+/// Manages the global per-process reference counter.
+extern void ModuleAddRef();
+extern void ModuleReleaseRef();
+
 namespace com { namespace base
 {
 
@@ -119,10 +124,12 @@ namespace com { namespace base
 	{
 		if (bLock) 
 		{
+			ModuleAddRef();
 			::InterlockedIncrement(&s_cServerLocks); 
 		}
 		else
 		{
+			ModuleReleaseRef();
 			::InterlockedDecrement(&s_cServerLocks);
 		}
 		// If this is an out-of-proc server, check to see
@@ -195,6 +202,7 @@ namespace com { namespace base
 				g_FactoryDataArray[i].m_RegistryName,
 				g_FactoryDataArray[i].m_VerIndProgID, 
 				g_FactoryDataArray[i].m_ProgID,
+				g_FactoryDataArray[i].m_threadingModel,
 				*(g_FactoryDataArray[i].m_pLIBID));
 		}
 

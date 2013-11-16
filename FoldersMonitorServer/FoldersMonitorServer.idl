@@ -42,9 +42,7 @@ interface IFoldersMonitorEvents : IUnknown
 {
 	import "objidl.idl";
 
-	[id(1)] HRESULT OnNameChanged([in] int action, [in] BSTR fileName);
-	[id(2)] HRESULT OnAttributesChanged([in] int action, [in] BSTR fileName);
-	[id(3)] HRESULT OnLastWriteChanged([in] int action, [in] BSTR fileName);
+	[id(1)] HRESULT OnChanged([in] int action, [in] BSTR fileName);
 }
 
 [

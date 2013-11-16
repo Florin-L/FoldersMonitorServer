@@ -20,7 +20,8 @@ namespace com { namespace base {
 		L"CoFoldersMonitor",				// Friendly Name
 		L"CoFoldersMonitor",				// ProgID
 		L"CoFoldersMonitor.1",				// Version-independent ProgID
-		&LIBID_FoldersMonitorLib,							// Type Library ID
+		L"Free",							// threading model
+		&LIBID_FoldersMonitorLib,			// Type Library ID
 		nullptr, 
 		0}
 	};

@@ -214,7 +214,7 @@ namespace watch {
 		//
 		struct INotifications
 		{
-			virtual void OnFileNameChanged(int action, const std::wstring &fileName) = 0;
+			virtual void OnEvent(int action, const std::wstring & fileName) = 0;
 		};
 
 		void SetListener(INotifications *listener)

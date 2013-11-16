@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0595 */
-/* at Thu Nov 14 22:25:47 2013
+/* at Fri Nov 15 20:27:54 2013
  */
 /* Compiler settings for FoldersMonitorServer.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0595 
@@ -47,7 +47,7 @@
 #include "FoldersMonitorServer_h.h"
 
 #define TYPE_FORMAT_STRING_SIZE   61                                
-#define PROC_FORMAT_STRING_SIZE   385                               
+#define PROC_FORMAT_STRING_SIZE   297                               
 #define EXPR_FORMAT_STRING_SIZE   1                                 
 #define TRANSMIT_AS_TABLE_SIZE    0            
 #define WIRE_MARSHAL_TABLE_SIZE   1            
@@ -320,7 +320,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 250 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
-	/* Procedure OnNameChanged */
+	/* Procedure OnChanged */
 
 /* 252 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
@@ -356,82 +356,6 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 290 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
 /* 292 */	NdrFcShort( 0x18 ),	/* X64 Stack size/offset = 24 */
 /* 294 */	0x8,		/* FC_LONG */
-			0x0,		/* 0 */
-
-	/* Procedure OnAttributesChanged */
-
-/* 296 */	0x33,		/* FC_AUTO_HANDLE */
-			0x6c,		/* Old Flags:  object, Oi2 */
-/* 298 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 302 */	NdrFcShort( 0x4 ),	/* 4 */
-/* 304 */	NdrFcShort( 0x20 ),	/* X64 Stack size/offset = 32 */
-/* 306 */	NdrFcShort( 0x8 ),	/* 8 */
-/* 308 */	NdrFcShort( 0x8 ),	/* 8 */
-/* 310 */	0x46,		/* Oi2 Flags:  clt must size, has return, has ext, */
-			0x3,		/* 3 */
-/* 312 */	0xa,		/* 10 */
-			0x5,		/* Ext Flags:  new corr desc, srv corr check, */
-/* 314 */	NdrFcShort( 0x0 ),	/* 0 */
-/* 316 */	NdrFcShort( 0x1 ),	/* 1 */
-/* 318 */	NdrFcShort( 0x0 ),	/* 0 */
-/* 320 */	NdrFcShort( 0x0 ),	/* 0 */
-
-	/* Parameter action */
-
-/* 322 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
-/* 324 */	NdrFcShort( 0x8 ),	/* X64 Stack size/offset = 8 */
-/* 326 */	0x8,		/* FC_LONG */
-			0x0,		/* 0 */
-
-	/* Parameter fileName */
-
-/* 328 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
-/* 330 */	NdrFcShort( 0x10 ),	/* X64 Stack size/offset = 16 */
-/* 332 */	NdrFcShort( 0x1c ),	/* Type Offset=28 */
-
-	/* Return value */
-
-/* 334 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
-/* 336 */	NdrFcShort( 0x18 ),	/* X64 Stack size/offset = 24 */
-/* 338 */	0x8,		/* FC_LONG */
-			0x0,		/* 0 */
-
-	/* Procedure OnLastWriteChanged */
-
-/* 340 */	0x33,		/* FC_AUTO_HANDLE */
-			0x6c,		/* Old Flags:  object, Oi2 */
-/* 342 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 346 */	NdrFcShort( 0x5 ),	/* 5 */
-/* 348 */	NdrFcShort( 0x20 ),	/* X64 Stack size/offset = 32 */
-/* 350 */	NdrFcShort( 0x8 ),	/* 8 */
-/* 352 */	NdrFcShort( 0x8 ),	/* 8 */
-/* 354 */	0x46,		/* Oi2 Flags:  clt must size, has return, has ext, */
-			0x3,		/* 3 */
-/* 356 */	0xa,		/* 10 */
-			0x5,		/* Ext Flags:  new corr desc, srv corr check, */
-/* 358 */	NdrFcShort( 0x0 ),	/* 0 */
-/* 360 */	NdrFcShort( 0x1 ),	/* 1 */
-/* 362 */	NdrFcShort( 0x0 ),	/* 0 */
-/* 364 */	NdrFcShort( 0x0 ),	/* 0 */
-
-	/* Parameter action */
-
-/* 366 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
-/* 368 */	NdrFcShort( 0x8 ),	/* X64 Stack size/offset = 8 */
-/* 370 */	0x8,		/* FC_LONG */
-			0x0,		/* 0 */
-
-	/* Parameter fileName */
-
-/* 372 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
-/* 374 */	NdrFcShort( 0x10 ),	/* X64 Stack size/offset = 16 */
-/* 376 */	NdrFcShort( 0x1c ),	/* Type Offset=28 */
-
-	/* Return value */
-
-/* 378 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
-/* 380 */	NdrFcShort( 0x18 ),	/* X64 Stack size/offset = 24 */
-/* 382 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
 			0x0
@@ -580,9 +504,7 @@ const CInterfaceStubVtbl _IFoldersMonitorStubVtbl =
 #pragma code_seg(".orpc")
 static const unsigned short IFoldersMonitorEvents_FormatStringOffsetTable[] =
     {
-    252,
-    296,
-    340
+    252
     };
 
 static const MIDL_STUBLESS_PROXY_INFO IFoldersMonitorEvents_ProxyInfo =
@@ -606,23 +528,21 @@ static const MIDL_SERVER_INFO IFoldersMonitorEvents_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(6) _IFoldersMonitorEventsProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(4) _IFoldersMonitorEventsProxyVtbl = 
 {
     &IFoldersMonitorEvents_ProxyInfo,
     &IID_IFoldersMonitorEvents,
     IUnknown_QueryInterface_Proxy,
     IUnknown_AddRef_Proxy,
     IUnknown_Release_Proxy ,
-    (void *) (INT_PTR) -1 /* IFoldersMonitorEvents::OnNameChanged */ ,
-    (void *) (INT_PTR) -1 /* IFoldersMonitorEvents::OnAttributesChanged */ ,
-    (void *) (INT_PTR) -1 /* IFoldersMonitorEvents::OnLastWriteChanged */
+    (void *) (INT_PTR) -1 /* IFoldersMonitorEvents::OnChanged */
 };
 
 const CInterfaceStubVtbl _IFoldersMonitorEventsStubVtbl =
 {
     &IID_IFoldersMonitorEvents,
     &IFoldersMonitorEvents_ServerInfo,
-    6,
+    4,
     0, /* pure interpreted */
     CStdStubBuffer_METHODS
 };

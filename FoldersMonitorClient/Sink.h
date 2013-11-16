@@ -59,22 +59,10 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	// IFoldersMonitorEvents
     public:
-		virtual /* [id] */ STDMETHODIMP OnNameChanged(/* [in] */ int action,
+		virtual /* [id] */ STDMETHODIMP OnChanged(/* [in] */ int action,
             /* [in] */ BSTR fileName)
 		{
-			wcout << L"OnNameChanged: " << action << L" / " << _bstr_t(fileName, false) << endl;
-			return S_OK;
-		}
-        
-        virtual /* [id] */ STDMETHODIMP OnAttributesChanged(/* [in] */ int action,
-            /* [in] */ BSTR fileName)
-		{
-			return S_OK;
-		}
-        
-        virtual /* [id] */ STDMETHODIMP OnLastWriteChanged(/* [in] */ int action,
-            /* [in] */ BSTR fileName)
-		{
+			wcout << L"OnChanged: " << action << L" / " << _bstr_t(fileName, false) << endl;
 			return S_OK;
 		}
 

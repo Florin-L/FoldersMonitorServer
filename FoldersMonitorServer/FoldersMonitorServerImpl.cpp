@@ -18,6 +18,11 @@
 	*perror = value; \
 
 ////////////////////////////////////////////////////////////////////////////////
+/// Manages the global per-process reference counter.
+extern void ModuleAddRef();
+extern void ModuleReleaseRef();
+
+////////////////////////////////////////////////////////////////////////////////
 ///
 CoFoldersMonitor::CoFoldersMonitor(IUnknown *pUnkOuter)
 	: com::base::CUnknown(pUnkOuter)
@@ -29,6 +34,8 @@ CoFoldersMonitor::CoFoldersMonitor(IUnknown *pUnkOuter)
 {
 	//
 	m_hStopWorker = ::CreateEvent(nullptr, TRUE, FALSE, nullptr);
+	//
+	ModuleAddRef();
 }
 
 ///
@@ -51,6 +58,8 @@ CoFoldersMonitor::~CoFoldersMonitor()
 	}
 
 	m_tasksMap.clear();
+	//
+	ModuleReleaseRef();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -411,42 +420,14 @@ STDMETHODIMP CoFoldersMonitor::StopTask(__in BSTR taskId, __out int *error)
 //}
 
 ////////////////////////////////////////////////////////////////////////////////
-///
-
-void CoFoldersMonitor::OnFileNameChanged(int action, const std::wstring & fileName)
-{
-	Fire_OnNameChanged(action, ::SysAllocString(fileName.c_str()));
-}
+/// INotification::OnEvent
 
 ///
-///
-STDMETHODIMP CoFoldersMonitor::Fire_OnNameChanged(__in int action, __in BSTR fileName)
+void CoFoldersMonitor::OnEvent(int action, const std::wstring & fileName)
 {
 	std::for_each(std::begin(m_events), std::end(m_events), [action, fileName](IFoldersMonitorEvents * handler) {
-		handler->OnNameChanged(action, fileName);
+		handler->OnChanged(action, ::SysAllocString(fileName.c_str()));
 	});
-
-	return S_OK;
-}
-
-///
-STDMETHODIMP CoFoldersMonitor::Fire_OnAttributesChanged(__in int action, __in BSTR fileName)
-{
-	std::for_each(std::begin(m_events), std::end(m_events), [action, fileName](IFoldersMonitorEvents * handler) {
-		handler->OnAttributesChanged(action, fileName);
-	});
-
-	return S_OK;
-}
-
-///
-STDMETHODIMP CoFoldersMonitor::Fire_OnLastWriteChanged(__in int action, __in BSTR fileName)
-{
-	std::for_each(std::begin(m_events), std::end(m_events), [action, fileName](IFoldersMonitorEvents * handler) {
-		handler->OnLastWriteChanged(action, fileName);
-	});
-
-	return S_OK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

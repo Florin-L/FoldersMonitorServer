@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0595 */
-/* at Thu Nov 14 22:25:47 2013
+/* at Fri Nov 15 20:27:54 2013
  */
 /* Compiler settings for FoldersMonitorServer.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0595 

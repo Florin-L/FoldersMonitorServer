@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0595 */
-/* at Thu Nov 14 22:25:47 2013
+/* at Fri Nov 15 20:27:54 2013
  */
 /* Compiler settings for FoldersMonitorServer.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0595 
@@ -251,15 +251,7 @@ EXTERN_C const IID IID_IFoldersMonitorEvents;
     IFoldersMonitorEvents : public IUnknown
     {
     public:
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnNameChanged( 
-            /* [in] */ int action,
-            /* [in] */ BSTR fileName) = 0;
-        
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnAttributesChanged( 
-            /* [in] */ int action,
-            /* [in] */ BSTR fileName) = 0;
-        
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnLastWriteChanged( 
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE OnChanged( 
             /* [in] */ int action,
             /* [in] */ BSTR fileName) = 0;
         
@@ -284,17 +276,7 @@ EXTERN_C const IID IID_IFoldersMonitorEvents;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFoldersMonitorEvents * This);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *OnNameChanged )( 
-            IFoldersMonitorEvents * This,
-            /* [in] */ int action,
-            /* [in] */ BSTR fileName);
-        
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *OnAttributesChanged )( 
-            IFoldersMonitorEvents * This,
-            /* [in] */ int action,
-            /* [in] */ BSTR fileName);
-        
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *OnLastWriteChanged )( 
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *OnChanged )( 
             IFoldersMonitorEvents * This,
             /* [in] */ int action,
             /* [in] */ BSTR fileName);
@@ -322,14 +304,8 @@ EXTERN_C const IID IID_IFoldersMonitorEvents;
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IFoldersMonitorEvents_OnNameChanged(This,action,fileName)	\
-    ( (This)->lpVtbl -> OnNameChanged(This,action,fileName) ) 
-
-#define IFoldersMonitorEvents_OnAttributesChanged(This,action,fileName)	\
-    ( (This)->lpVtbl -> OnAttributesChanged(This,action,fileName) ) 
-
-#define IFoldersMonitorEvents_OnLastWriteChanged(This,action,fileName)	\
-    ( (This)->lpVtbl -> OnLastWriteChanged(This,action,fileName) ) 
+#define IFoldersMonitorEvents_OnChanged(This,action,fileName)	\
+    ( (This)->lpVtbl -> OnChanged(This,action,fileName) ) 
 
 #endif /* COBJMACROS */
 

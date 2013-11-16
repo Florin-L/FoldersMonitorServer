@@ -8,7 +8,23 @@
 
 bool g_enableTraces = true;
 
-//
+////////////////////////////////////////////////////////////////////////////////
+/// Manages the global per-process reference counter.
+
+///
+void ModuleAddRef()
+{
+	::CoAddRefServerProcess();
+}
+
+///
+void ModuleReleaseRef()
+{
+	::CoReleaseServerProcess();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 					   _In_opt_ HINSTANCE hPrevInstance,
 					   _In_ LPTSTR    lpCmdLine,
@@ -45,9 +61,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		_ASSERT(SUCCEEDED(hr));
 		com::Trace(L"The server was unregistered.");
 
-		//MessageBox(nullptr, L"The server was unregistered !", L"Folders Monitor", 
-		//	MB_SETFOREGROUND | MB_OK);
-
 		::CoUninitialize();
 		return hr;
 	}
@@ -55,9 +68,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	//
 	if (com::base::CFactory::StartFactories())
 	{
-		//MessageBox(nullptr, L"The class object was registered !", L"Info",
-		//	MB_SETFOREGROUND | MB_OK);
-
 		com::Trace(L"[%s] : %s\n", __FUNCTIONW__, L"The class factories were started !");
 
 #if 0

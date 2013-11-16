@@ -17,6 +17,7 @@ namespace com { namespace base
 		const std::wstring &friendlyName,
 		const std::wstring &verIndProgID,
 		const std::wstring &progID,
+		const std::wstring &threadingModel,
 		const GUID &libid);
 
 	// This function will unregister a component.  Components

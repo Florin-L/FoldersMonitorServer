@@ -9,7 +9,7 @@
 namespace com { namespace base
 {
 	// Forward reference
-	class CFactoryData ;
+	class CFactoryData;
 
 	// Global data used by CFactory
 	extern CFactoryData g_FactoryDataArray[];
@@ -47,6 +47,9 @@ namespace com { namespace base
 		// Version-independent ProgID
 		std::wstring m_VerIndProgID;
 
+		// The threading model
+		std::wstring m_threadingModel;
+
 		// Helper function for finding the class ID
 		BOOL IsClassID(const CLSID &clsid) const
 		{ 
@@ -61,7 +64,7 @@ namespace com { namespace base
 		//
 
 		// Pointer to running class factory for this component
-		IClassFactory *m_pIClassFactory ;
+		IClassFactory *m_pIClassFactory;
 
 		// Magic cookie to identify running object
 		DWORD m_dwRegister;
