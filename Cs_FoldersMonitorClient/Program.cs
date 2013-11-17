@@ -16,28 +16,35 @@ namespace Cs_FoldersMonitorClient
     {
         static void Main(string[] args)
         {
-            FoldersMonitorServer.CoFoldersMonitor fm = new FoldersMonitorServer.CoFoldersMonitor();
-            fm.Start(10000);
+            try
+            {
+                FoldersMonitorServer.CoFoldersMonitor fm = new FoldersMonitorServer.CoFoldersMonitor();
+                fm.Start(10000);
 
-            // notifications filter: FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE
-            string taskId = fm.CreateTask("d:\\tmp", 0x00000001 | 0x00000010);
-            Console.WriteLine("task id : {0}", taskId);
+                // notifications filter: FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE
+                string taskId = fm.CreateTask("d:\\tmp", 0x00000001 | 0x00000010);
+                Console.WriteLine("task id : {0}", taskId);
 
-            int error = 0;
-            fm.StartTask(taskId, out error);
+                int error = 0;
+                fm.StartTask(taskId, out error);
 
-            //
-            FoldersMonitorEventHandler handler = new FoldersMonitorEventHandler();
-            fm.OnChanged += handler.OnChanged;
+                //
+                FoldersMonitorEventHandler handler = new FoldersMonitorEventHandler();
+                fm.OnChanged += handler.OnChanged;
 
-            Console.WriteLine("Working ...");
-            Console.ReadKey();
+                Console.WriteLine("Working ...");
+                Console.ReadKey();
 
-            //
-            fm.StopTask(taskId, out error);
-            fm.Stop();
+                //
+                fm.StopTask(taskId, out error);
+                fm.Stop();
 
-            Console.WriteLine("Bye ...");
+                Console.WriteLine("Bye ...");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception caught: {0}", e.Message);
+            }
         }
     }
 }
