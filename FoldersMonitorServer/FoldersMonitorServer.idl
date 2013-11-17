@@ -2,26 +2,13 @@ import "wtypes.idl";
 import "Unknwn.idl";
 
 [
-	uuid(CEDC3FC3-3451-43CF-8A0A-8A18FBF82028),
-	version(1.0)
-]
-typedef enum NotificationFlags
-{
-	NONE = 0,
-	CHANGE_NAME = 2,
-	CHANGE_ATTRIBUTES = 4,
-	CHANGE_LAST_WRITE = 8
-} NotificationFlags;
-
-//cpp_quote("enum __declspec(uuid(\"{CEDC3FC3-3451-43CF-8A0A-8A18FBF82028}\")) NotificationFlags;")
-
-[
 	object,
 	uuid(EAD6832B-72F1-417B-8606-6139245791F7),
 	pointer_default(unique),
-	oleautomation
+	oleautomation,
+	dual
 ]
-interface IFoldersMonitor : IUnknown
+interface IFoldersMonitor : IDispatch
 {
 	[id(1)] HRESULT Start(int nMaxTasksCount);
 	[id(2)] HRESULT Stop();

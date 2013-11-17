@@ -72,7 +72,6 @@ public:
 	// The factory method.
 	static HRESULT CreateInstance(IUnknown *pUnknownOuter, CUnknown **ppNewComponent);
 
-#if 0
 	/// IDispatch
 	///
 	STDMETHODIMP GetTypeInfoCount(UINT* pctinfo);
@@ -88,7 +87,6 @@ public:
 		LCID lcid, WORD wFlags, 
 		DISPPARAMS* pdispparams, VARIANT* pvarResult,
 		EXCEPINFO* pexcepinfo, UINT* puArgErr);
-#endif
 
 	/// IExternalConnection
 	///
@@ -121,7 +119,13 @@ public:
 protected:
 	virtual ~CoFoldersMonitor();
 
+	HRESULT Init();
+
 private:
+	///
+	HRESULT LoadTypeInfo(ITypeInfo  **pptinfo,
+		const CLSID &libid, const CLSID &iid, LCID lcid);
+
 	///
 	STDMETHODIMP Fire_OnChanged(__in int action, __in BSTR fileName);
 
@@ -171,6 +175,8 @@ private:
 	CsLock					m_adviseLock;
 
 private:
+	// the typeinfo library
+	ITypeInfo									*m_typeInfo;
 	// the outstanding references to this service
 	long										m_cStrongLocks;
 	// the directory monitoring service

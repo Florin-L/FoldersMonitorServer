@@ -59,6 +59,9 @@ namespace com { namespace base
 		// Type Library ID
 		const GUID *m_pLIBID;
 
+		//std::wstring m_major;
+		//std::wstring m_minor;
+
 		//
 		// Out of process server support
 		//

@@ -6,7 +6,11 @@
 #include "Trace.h"
 #include "CFactory.h"
 
+//#include "..\FoldersMonitorServer\FoldersMonitorServer_h.h"
+
 bool g_enableTraces = true;
+int g_majorVer = 0;
+int g_minorVer = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Manages the global per-process reference counter.
@@ -23,6 +27,39 @@ void ModuleReleaseRef()
 {
 	ULONG cRef = ::CoReleaseServerProcess();
 	com::Trace(L"[%s] : global server reference counter = %d", __FUNCTIONW__, cRef);
+}
+
+///
+static HRESULT LoadTypeInfo(ITypeInfo **ppTypeInfo, const CLSID &libId,
+									   const CLSID &iid, LCID lcid)
+{
+	HRESULT hr;
+	LPTYPELIB ptlib = nullptr;
+	LPTYPEINFO ptinfo = nullptr;
+
+	*ppTypeInfo = nullptr;
+
+	// Load type library.
+	hr = ::LoadRegTypeLib(libId, 0, 0, lcid, &ptlib);
+	if (FAILED(hr))
+	{
+		com::Trace(L"[%s] : LoadRegTypeLib failed ! (%d)", __FUNCTIONW__, hr);
+		return hr;
+	}
+
+	// Get the information for the interface of the object.
+	hr = ptlib->GetTypeInfoOfGuid(iid, &ptinfo);
+	if (FAILED(hr))
+	{
+		com::Trace(L"[%s] : GetTypeInfoOfGuid failed ! (%d)", __FUNCTIONW__, hr);
+		ptlib->Release();
+		return hr;
+	}
+
+	ptlib->Release();
+	*ppTypeInfo = ptinfo;
+
+	return NOERROR;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +87,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		_ASSERT(SUCCEEDED(hr));
 		com::Trace(L"The server was registered.");
 
-		//MessageBox(nullptr, L"The server was registered !", L"Folders Monitor", 
-		//	MB_SETFOREGROUND | MB_OK);
+		//
+		//ITypeInfo *typeInfo = nullptr;
+		//HRESULT r = LoadTypeInfo(&typeInfo, LIBID_FoldersMonitorLib, IID_IFoldersMonitor, 0);
 
 		::CoUninitialize();
 		return hr;

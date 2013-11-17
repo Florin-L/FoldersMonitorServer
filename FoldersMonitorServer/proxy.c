@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0595 */
-/* at Fri Nov 15 20:27:54 2013
+/* at Sun Nov 17 17:11:08 2013
  */
 /* Compiler settings for FoldersMonitorServer.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0595 
@@ -110,7 +110,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 			0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /*  2 */	NdrFcLong( 0x0 ),	/* 0 */
-/*  6 */	NdrFcShort( 0x3 ),	/* 3 */
+/*  6 */	NdrFcShort( 0x7 ),	/* 7 */
 /*  8 */	NdrFcShort( 0x18 ),	/* X64 Stack size/offset = 24 */
 /* 10 */	NdrFcShort( 0x8 ),	/* 8 */
 /* 12 */	NdrFcShort( 0x8 ),	/* 8 */
@@ -142,7 +142,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 38 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 40 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 44 */	NdrFcShort( 0x4 ),	/* 4 */
+/* 44 */	NdrFcShort( 0x8 ),	/* 8 */
 /* 46 */	NdrFcShort( 0x10 ),	/* X64 Stack size/offset = 16 */
 /* 48 */	NdrFcShort( 0x0 ),	/* 0 */
 /* 50 */	NdrFcShort( 0x8 ),	/* 8 */
@@ -167,7 +167,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 70 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 72 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 76 */	NdrFcShort( 0x5 ),	/* 5 */
+/* 76 */	NdrFcShort( 0x9 ),	/* 9 */
 /* 78 */	NdrFcShort( 0x28 ),	/* X64 Stack size/offset = 40 */
 /* 80 */	NdrFcShort( 0x8 ),	/* 8 */
 /* 82 */	NdrFcShort( 0x8 ),	/* 8 */
@@ -211,7 +211,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 120 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 122 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 126 */	NdrFcShort( 0x6 ),	/* 6 */
+/* 126 */	NdrFcShort( 0xa ),	/* 10 */
 /* 128 */	NdrFcShort( 0x20 ),	/* X64 Stack size/offset = 32 */
 /* 130 */	NdrFcShort( 0x0 ),	/* 0 */
 /* 132 */	NdrFcShort( 0x24 ),	/* 36 */
@@ -249,7 +249,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 164 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 166 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 170 */	NdrFcShort( 0x7 ),	/* 7 */
+/* 170 */	NdrFcShort( 0xb ),	/* 11 */
 /* 172 */	NdrFcShort( 0x20 ),	/* X64 Stack size/offset = 32 */
 /* 174 */	NdrFcShort( 0x0 ),	/* 0 */
 /* 176 */	NdrFcShort( 0x24 ),	/* 36 */
@@ -287,7 +287,7 @@ static const FoldersMonitorServer_MIDL_PROC_FORMAT_STRING FoldersMonitorServer__
 /* 208 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 210 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 214 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 214 */	NdrFcShort( 0xc ),	/* 12 */
 /* 216 */	NdrFcShort( 0x20 ),	/* X64 Stack size/offset = 32 */
 /* 218 */	NdrFcShort( 0x0 ),	/* 0 */
 /* 220 */	NdrFcShort( 0x24 ),	/* 36 */
@@ -430,12 +430,12 @@ static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[ WIRE_MARSHAL_TA
 
 
 
-/* Standard interface: __MIDL_itf_FoldersMonitorServer_0000_0000, ver. 0.0,
-   GUID={0x00000000,0x0000,0x0000,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}} */
-
-
 /* Object interface: IUnknown, ver. 0.0,
    GUID={0x00000000,0x0000,0x0000,{0xC0,0x00,0x00,0x00,0x00,0x00,0x00,0x46}} */
+
+
+/* Object interface: IDispatch, ver. 0.0,
+   GUID={0x00020400,0x0000,0x0000,{0xC0,0x00,0x00,0x00,0x00,0x00,0x00,0x46}} */
 
 
 /* Object interface: IFoldersMonitor, ver. 0.0,
@@ -444,6 +444,10 @@ static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[ WIRE_MARSHAL_TA
 #pragma code_seg(".orpc")
 static const unsigned short IFoldersMonitor_FormatStringOffsetTable[] =
     {
+    (unsigned short) -1,
+    (unsigned short) -1,
+    (unsigned short) -1,
+    (unsigned short) -1,
     0,
     38,
     70,
@@ -473,13 +477,17 @@ static const MIDL_SERVER_INFO IFoldersMonitor_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(9) _IFoldersMonitorProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(13) _IFoldersMonitorProxyVtbl = 
 {
     &IFoldersMonitor_ProxyInfo,
     &IID_IFoldersMonitor,
     IUnknown_QueryInterface_Proxy,
     IUnknown_AddRef_Proxy,
     IUnknown_Release_Proxy ,
+    0 /* IDispatch::GetTypeInfoCount */ ,
+    0 /* IDispatch::GetTypeInfo */ ,
+    0 /* IDispatch::GetIDsOfNames */ ,
+    0 /* IDispatch_Invoke_Proxy */ ,
     (void *) (INT_PTR) -1 /* IFoldersMonitor::Start */ ,
     (void *) (INT_PTR) -1 /* IFoldersMonitor::Stop */ ,
     (void *) (INT_PTR) -1 /* IFoldersMonitor::CreateTask */ ,
@@ -488,13 +496,28 @@ CINTERFACE_PROXY_VTABLE(9) _IFoldersMonitorProxyVtbl =
     (void *) (INT_PTR) -1 /* IFoldersMonitor::StopTask */
 };
 
-const CInterfaceStubVtbl _IFoldersMonitorStubVtbl =
+
+static const PRPC_STUB_FUNCTION IFoldersMonitor_table[] =
+{
+    STUB_FORWARDING_FUNCTION,
+    STUB_FORWARDING_FUNCTION,
+    STUB_FORWARDING_FUNCTION,
+    STUB_FORWARDING_FUNCTION,
+    NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2
+};
+
+CInterfaceStubVtbl _IFoldersMonitorStubVtbl =
 {
     &IID_IFoldersMonitor,
     &IFoldersMonitor_ServerInfo,
-    9,
-    0, /* pure interpreted */
-    CStdStubBuffer_METHODS
+    13,
+    &IFoldersMonitor_table[-3],
+    CStdStubBuffer_DELEGATING_METHODS
 };
 
 
@@ -592,6 +615,13 @@ PCInterfaceName const _FoldersMonitorServer_InterfaceNamesList[] =
     0
 };
 
+const IID *  const _FoldersMonitorServer_BaseIIDList[] = 
+{
+    &IID_IDispatch,
+    0,
+    0
+};
+
 
 #define _FoldersMonitorServer_CHECK_IID(n)	IID_GENERIC_CHECK_IID( _FoldersMonitorServer, pIID, n)
 
@@ -609,7 +639,7 @@ const ExtendedProxyFileInfo FoldersMonitorServer_ProxyFileInfo =
     (PCInterfaceProxyVtblList *) & _FoldersMonitorServer_ProxyVtblList,
     (PCInterfaceStubVtblList *) & _FoldersMonitorServer_StubVtblList,
     (const PCInterfaceName * ) & _FoldersMonitorServer_InterfaceNamesList,
-    0, /* no delegation */
+    (const IID ** ) & _FoldersMonitorServer_BaseIIDList,
     & _FoldersMonitorServer_IID_Lookup, 
     2,
     2,

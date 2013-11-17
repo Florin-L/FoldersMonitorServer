@@ -22,10 +22,14 @@
 extern void ModuleAddRef();
 extern void ModuleReleaseRef();
 
+extern int g_majorVer;
+extern int g_minorVer;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///
 CoFoldersMonitor::CoFoldersMonitor(IUnknown *pUnkOuter)
 	: com::base::CUnknown(pUnkOuter)
+	, m_typeInfo(nullptr)
 	, m_cStrongLocks(0)
 	, m_watcher()
 	, m_hWorkerThread(nullptr)
@@ -58,8 +62,63 @@ CoFoldersMonitor::~CoFoldersMonitor()
 	}
 
 	m_tasksMap.clear();
+
+	//
+	if (m_typeInfo)
+		m_typeInfo->Release();
+
 	//
 	ModuleReleaseRef();
+}
+
+///
+HRESULT CoFoldersMonitor::Init()
+{
+#if 0
+	// load the type library
+	//DebugBreak();
+	HRESULT hr = LoadTypeInfo(&m_typeInfo, LIBID_FoldersMonitorLib, IID_IFoldersMonitor, 0);
+
+	com::Trace(L"[%s] : LoadTypeInfo returned %d", hr);
+	_ASSERT(SUCCEEDED(hr));
+
+	return hr;
+#endif
+
+	return S_OK;
+}
+
+///
+HRESULT CoFoldersMonitor::LoadTypeInfo(ITypeInfo **ppTypeInfo, const CLSID &libId,
+									   const CLSID &iid, LCID lcid)
+{
+	HRESULT hr;
+	LPTYPELIB ptlib = nullptr;
+	LPTYPEINFO ptinfo = nullptr;
+
+	*ppTypeInfo = nullptr;
+
+	// Load type library.
+	hr = ::LoadRegTypeLib(libId, g_majorVer, g_minorVer, lcid, &ptlib);
+	if (FAILED(hr))
+	{
+		com::Trace(L"[%s] : LoadRegTypeLib failed ! (%d)", hr);
+		return hr;
+	}
+
+	// Get the information for the interface of the object.
+	hr = ptlib->GetTypeInfoOfGuid(iid, &ptinfo);
+	if (FAILED(hr))
+	{
+		com::Trace(L"[%s] : GetTypeInfoOfGuid failed ! (%d)", hr);
+		ptlib->Release();
+		return hr;
+	}
+
+	ptlib->Release();
+	*ppTypeInfo = ptinfo;
+
+	return NOERROR;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +127,11 @@ CoFoldersMonitor::~CoFoldersMonitor()
 ///
 STDMETHODIMP CoFoldersMonitor::NDQueryInterface(REFIID riid, void **ppv)
 {
-	if (IsEqualIID(IID_IFoldersMonitor, riid))
+	if (IsEqualIID(IID_IDispatch, riid))
+	{
+		return FinishQI(static_cast<IDispatch*>(this), ppv);
+	}
+	else if (IsEqualIID(IID_IFoldersMonitor, riid))
 	{
 		com::Trace(L"[%s] : %s", __FUNCTIONW__, L"Query for: IID_IFoldersMonitor\n");
 
@@ -97,21 +160,30 @@ HRESULT CoFoldersMonitor::CreateInstance(IUnknown *pUnknownOuter, CUnknown **ppN
 	return S_OK;
 }
 
-#if 0
 ////////////////////////////////////////////////////////////////////////////////
 /// IDispatch
 
 ///
 STDMETHODIMP CoFoldersMonitor::GetTypeInfoCount(UINT* pctinfo)
 {
-	return E_NOTIMPL;
+	*pctinfo = 1;
+	return S_OK;
 }
 
 ///
 STDMETHODIMP CoFoldersMonitor::GetTypeInfo(UINT itinfo, 
 										   LCID lcid, ITypeInfo** pptinfo)
 {
-	return E_NOTIMPL;
+	*pptinfo = nullptr;
+
+	if (itinfo != 0)
+		return ResultFromScode(DISP_E_BADINDEX);
+
+	//
+	m_typeInfo->AddRef();
+	*pptinfo = m_typeInfo;
+
+	return S_OK;
 }
 
 ///
@@ -119,17 +191,24 @@ STDMETHODIMP CoFoldersMonitor::GetIDsOfNames(REFIID riid,
 											 LPOLESTR* rgszNames, UINT cNames,
 											 LCID lcid, DISPID* rgdispid)
 {
-	return E_NOTIMPL;
+	return DispGetIDsOfNames(m_typeInfo, rgszNames, cNames, rgdispid);
 }
 
+///
 STDMETHODIMP CoFoldersMonitor::Invoke(DISPID dispidMember, REFIID riid,
 									  LCID lcid, WORD wFlags, 
 									  DISPPARAMS* pdispparams, VARIANT* pvarResult,
 									  EXCEPINFO* pexcepinfo, UINT* puArgErr)
 {
-	return E_NOTIMPL;
+	return DispInvoke(this, 
+		m_typeInfo,
+		dispidMember,
+		wFlags,
+		pdispparams,
+		pvarResult,
+		pexcepinfo,
+		puArgErr);
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 /// IExternalConnection
