@@ -28,7 +28,6 @@ interface IFoldersMonitor : IDispatch
 interface IFoldersMonitorEvents : IUnknown
 {
 	import "objidl.idl";
-
 	[id(1)] HRESULT OnChanged([in] int action, [in] BSTR fileName);
 }
 

@@ -74,16 +74,12 @@ CoFoldersMonitor::~CoFoldersMonitor()
 ///
 HRESULT CoFoldersMonitor::Init()
 {
-#if 0
 	// load the type library
 	//DebugBreak();
 	HRESULT hr = LoadTypeInfo(&m_typeInfo, LIBID_FoldersMonitorLib, IID_IFoldersMonitor, 0);
 
 	com::Trace(L"[%s] : LoadTypeInfo returned %d", hr);
 	_ASSERT(SUCCEEDED(hr));
-
-	return hr;
-#endif
 
 	return S_OK;
 }
@@ -200,7 +196,7 @@ STDMETHODIMP CoFoldersMonitor::Invoke(DISPID dispidMember, REFIID riid,
 									  DISPPARAMS* pdispparams, VARIANT* pvarResult,
 									  EXCEPINFO* pexcepinfo, UINT* puArgErr)
 {
-	return DispInvoke(this, 
+	HRESULT hr = DispInvoke(static_cast<IDispatch*>(this), 
 		m_typeInfo,
 		dispidMember,
 		wFlags,
@@ -208,6 +204,10 @@ STDMETHODIMP CoFoldersMonitor::Invoke(DISPID dispidMember, REFIID riid,
 		pvarResult,
 		pexcepinfo,
 		puArgErr);
+
+	_ASSERT(SUCCEEDED(hr));
+
+	return hr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

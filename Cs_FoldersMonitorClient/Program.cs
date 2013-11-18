@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Cs_FoldersMonitorClient
 {
@@ -18,6 +19,14 @@ namespace Cs_FoldersMonitorClient
         {
             try
             {
+                // early binding         
+                Console.WriteLine("Early binding");
+
+                // Run the following command in console:
+                // > tlbimp FoldersMonitorServer.tlb /out:FoldersMonitorServer.dll
+                //
+                // Add FoldersMonitorServer.dll as a reference to this project.
+
                 FoldersMonitorServer.CoFoldersMonitor fm = new FoldersMonitorServer.CoFoldersMonitor();
                 fm.Start(10000);
 
@@ -38,13 +47,78 @@ namespace Cs_FoldersMonitorClient
                 //
                 fm.StopTask(taskId, out error);
                 fm.Stop();
-
-                Console.WriteLine("Bye ...");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception caught: {0}", e.Message);
+                String errorMessage;
+                errorMessage = "Error: ";
+                errorMessage = String.Concat(errorMessage, e.Message);
+                errorMessage = String.Concat(errorMessage, " Line: ");
+                errorMessage = String.Concat(errorMessage, e.Source);
+
+                Console.WriteLine(errorMessage);
+                return;
             }
+
+            try
+            {
+                // late binding
+                Console.WriteLine("Late binding");
+
+                Type objClass = Type.GetTypeFromProgID("CoFoldersMonitor.1");
+                object objFM = Activator.CreateInstance(objClass);
+
+                object[] arguments = null;
+
+                arguments = new object[1];
+                arguments[0] = 10000;
+                objFM.GetType().InvokeMember("Start", BindingFlags.InvokeMethod, null, objFM, arguments);
+
+                arguments = new object[2];
+                arguments[0] = "d:\\tmp";
+                arguments[1] = 0x00000001 | 0x00000010;
+
+                string taskId = (objFM.GetType().InvokeMember("CreateTask", BindingFlags.InvokeMethod,
+                    null, objFM, arguments)) as string;
+
+                Console.WriteLine("task {0}", taskId);
+
+                arguments = new object[2];
+                arguments[0] = taskId;
+                arguments[1] = 0;
+
+                ParameterModifier parametersOut = new ParameterModifier(2);
+                parametersOut[0] = false;
+                parametersOut[1] = true;    // the second argument is passed on by reference !!!!
+
+                objFM.GetType().InvokeMember("StartTask", BindingFlags.InvokeMethod,
+                    null, objFM, arguments,
+                    new ParameterModifier[] { parametersOut }, null, null);
+
+                Console.WriteLine("Working ...");
+                Console.ReadKey();
+
+                objFM.GetType().InvokeMember("StopTask", BindingFlags.InvokeMethod,
+                   null, objFM, arguments,
+                   new ParameterModifier[] { parametersOut }, null, null);
+
+                objFM.GetType().InvokeMember("Stop", BindingFlags.InvokeMethod,
+                    null, objFM, null);
+
+            }
+            catch (Exception e)
+            {
+                String errorMessage;
+                errorMessage = "Error: ";
+                errorMessage = String.Concat(errorMessage, e.Message);
+                errorMessage = String.Concat(errorMessage, " Line: ");
+                errorMessage = String.Concat(errorMessage, e.Source);
+
+                Console.WriteLine(errorMessage);
+                Console.WriteLine(e.InnerException.ToString());
+            }
+
+            Console.WriteLine("Bye ...");
         }
     }
 }
