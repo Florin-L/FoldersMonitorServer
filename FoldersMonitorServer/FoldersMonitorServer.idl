@@ -45,6 +45,6 @@ library FoldersMonitorLib
 	coclass CoFoldersMonitor
 	{
 		[default] interface IFoldersMonitor;
-		[source, default] interface IFoldersMonitorEvents;
+		[source, default] dispinterface IFoldersMonitorEvents;
 	}
 }

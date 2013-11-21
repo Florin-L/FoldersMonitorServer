@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Cs_FoldersMonitorClient
 {
-    //
+
     class FoldersMonitorEventHandler : FoldersMonitorServer.IFoldersMonitorEvents
     {
         public void OnChanged(int action, string fileName)
@@ -13,10 +16,66 @@ namespace Cs_FoldersMonitorClient
     }
 
     //
+    [Guid("231A27E0-55B9-44A2-9025-F82B8ED5F40F"),
+    InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+    TypeLibType(TypeLibTypeFlags.FOleAutomation)]
+    [ComImport]
+    public interface IFoldersMonitorEvents
+    {
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        void OnChanged([In] int action, [MarshalAs(UnmanagedType.BStr)][In] string fileName);
+    }
+
+    //
+    //[ComVisible(false), TypeLibType(TypeLibTypeFlags.FHidden)]
+    //public delegate void IFoldersMonitorEvents_OnChangedEventHandler([In] int action, 
+    //    [MarshalAs(UnmanagedType.BStr)] [In] string fileName);
+
+    //[ClassInterface(ClassInterfaceType.None), TypeLibType(TypeLibTypeFlags.FHidden)]
+    //public sealed class IFoldersMonitorEvents_SinkHelper : IFoldersMonitorEvents
+    //{
+    //    public IFoldersMonitorEvents_OnChangedEventHandler m_OnChangedDelegate;
+    //    public int m_dwCookie;
+
+    //    public override void OnChanged(int action, string fileName)
+    //    {
+    //        if (this.m_OnChangedDelegate != null)
+    //        {
+    //            this.m_OnChangedDelegate(action, fileName);
+    //            return;
+    //        }
+    //    }
+
+    //    internal IFoldersMonitorEvents_SinkHelper()
+    //    {
+    //        this.m_dwCookie = 0;
+    //        this.m_OnChangedDelegate = null;
+    //    }
+    //}
+
+    [ClassInterface(ClassInterfaceType.None), TypeLibType(TypeLibTypeFlags.FHidden)]
+    public class FoldersMonitorEvents_Sink : IFoldersMonitorEvents
+    {
+        public void OnChanged(int action, string fileName)
+        {
+            Console.WriteLine(fileName);
+        }
+    }
+
+    //
     class Program
     {
         static void Main(string[] args)
         {
+            if (args.Length < 2)
+            {
+                Console.WriteLine("Usage:\n{0} {1} {2}", "Cs_FoldersMonitorClient.exe", "dir_1", "dir_2");
+                return;
+            }
+
+            string directoryName1 = args[0];
+            string directoryName2 = args[1];
+
             try
             {
                 // early binding         
@@ -31,7 +90,7 @@ namespace Cs_FoldersMonitorClient
                 fm.Start(10000);
 
                 // notifications filter: FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE
-                string taskId = fm.CreateTask("d:\\tmp", 0x00000001 | 0x00000010);
+                string taskId = fm.CreateTask(directoryName1, 0x00000001 | 0x00000010);
                 Console.WriteLine("task id : {0}", taskId);
 
                 int error = 0;
@@ -75,9 +134,23 @@ namespace Cs_FoldersMonitorClient
                 objFM.GetType().InvokeMember("Start", BindingFlags.InvokeMethod, null, objFM, arguments);
 
                 arguments = new object[2];
-                arguments[0] = "d:\\tmp";
+                arguments[0] = directoryName2;
                 arguments[1] = 0x00000001 | 0x00000010;
 
+                //
+                int cookie = -1;
+                Guid IID_IFoldersMonitorEvents = new Guid("231A27E0-55B9-44A2-9025-F82B8ED5F40F");
+
+                IConnectionPointContainer cpc = objFM as IConnectionPointContainer;
+
+                IConnectionPoint cp;
+                cpc.FindConnectionPoint(IID_IFoldersMonitorEvents, out cp);
+
+                IFoldersMonitorEvents sink = new FoldersMonitorEvents_Sink();
+
+                cp.Advise(sink, out cookie);
+
+                //
                 string taskId = (objFM.GetType().InvokeMember("CreateTask", BindingFlags.InvokeMethod,
                     null, objFM, arguments)) as string;
 
@@ -104,6 +177,9 @@ namespace Cs_FoldersMonitorClient
 
                 objFM.GetType().InvokeMember("Stop", BindingFlags.InvokeMethod,
                     null, objFM, null);
+
+                //
+                cp.Unadvise(cookie);
 
             }
             catch (Exception e)

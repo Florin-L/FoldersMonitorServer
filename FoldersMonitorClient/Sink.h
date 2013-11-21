@@ -12,13 +12,21 @@ class Sink
 	: public IFoldersMonitorEvents
 {
 public:
-	Sink()
-		: m_cRef(1)
+	//
+	static Sink * Create()
 	{
+		Sink * p = new(std::nothrow) Sink();
+		if (!p)
+			return nullptr;
+
+		p->AddRef();
+		return p;
 	}
 
+	//
 	~Sink()
 	{
+		_ASSERT(0 == m_cRef);
 	}
 
 	// IUnknown
@@ -65,6 +73,12 @@ public:
 			wcout << L"OnChanged: " << action << L" / " << _bstr_t(fileName, false) << endl;
 			return S_OK;
 		}
+
+private:
+	Sink() : m_cRef(0) {}
+
+	Sink(const Sink &);
+	Sink & operator =(const Sink &);
 
 private:
 	long m_cRef;

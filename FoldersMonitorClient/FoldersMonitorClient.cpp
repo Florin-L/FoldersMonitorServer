@@ -18,6 +18,15 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	if (argc < 3)
+	{
+		std::wcout << L"Usage:\n" << argv[0] << L" " << argv[1] << L" " << argv[2] << std::endl;
+		exit(1);
+	}
+
+	std::wstring directoryName1 = argv[1];
+	std::wstring directoryName2 = argv[2];
+
 	HRESULT hr = ::CoInitializeEx(0, COINIT_MULTITHREADED);
 	if (FAILED(hr))
 		return hr;
@@ -51,14 +60,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	hr = pUnk->QueryInterface<IConnectionPointContainer>(&pcpc);
 	_ASSERT(SUCCEEDED(hr));
 
-	std::unique_ptr<Sink> sink(new Sink());
+	Sink *sink = Sink::Create();
 	DWORD dwCookie = 0;
 
 	IConnectionPointPtr pcp;
 	hr = pcpc->FindConnectionPoint(IID_IFoldersMonitorEvents, &pcp);
 	_ASSERT(SUCCEEDED(hr));
 
-	pcp->Advise((IUnknown*) sink.get(), &dwCookie);
+	pcp->Advise((IUnknown*) sink, &dwCookie);
 
 	//
 	IFoldersMonitorPtr pFoldersMonitor;
@@ -75,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	hr = pFoldersMonitor->Start(1000);
 	_ASSERT(SUCCEEDED(hr));
 
-	_bstr_t folder(L"d:\\temp");
+	_bstr_t folder(directoryName1.c_str());
 
 	BSTR taskId = nullptr;
 	hr = pFoldersMonitor->CreateTask(folder, FILE_NOTIFY_CHANGE_FILE_NAME, &taskId);
@@ -116,9 +125,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//
 	BSTR taskId1;
-	_bstr_t folder1(L"d:\\tmp");
+	_bstr_t folder1(directoryName2.c_str());
 
-	hr = pFoldersMonitor->CreateTask(folder1, FILE_NOTIFY_CHANGE_FILE_NAME, &taskId1);
+	hr = pFoldersMonitor->CreateTask(folder1, FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE, &taskId1);
 	_ASSERT(SUCCEEDED(hr));
 
 	std::wcout << _bstr_t(taskId1) << std::endl;
@@ -155,6 +164,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	//
 	pcp->Unadvise(dwCookie);
 	pcp = nullptr;
+
+	sink->Release();
 
 	//
 	//hr = pGlobalItfTable->RevokeInterfaceFromGlobal(cookie);

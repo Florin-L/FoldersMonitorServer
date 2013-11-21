@@ -505,7 +505,7 @@ STDMETHODIMP CoFoldersMonitor::StopTask(__in BSTR taskId, __out int *error)
 void CoFoldersMonitor::OnEvent(int action, const std::wstring & fileName)
 {
 	std::for_each(std::begin(m_events), std::end(m_events), [action, fileName](IFoldersMonitorEvents * handler) {
-		handler->OnChanged(action, ::SysAllocString(fileName.c_str()));
+		handler->OnChanged(action, _bstr_t(fileName.c_str()).copy());
 	});
 }
 
