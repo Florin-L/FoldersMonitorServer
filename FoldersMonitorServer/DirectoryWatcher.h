@@ -43,6 +43,12 @@ namespace watch {
 			return m_worker;
 		}
 
+		///
+		const std::wstring & GetDirectoryName() const
+		{
+			return m_dirName;
+		}
+
 	protected:
 		static void CALLBACK NotificationCompletion(DWORD errorCode,	// completion code
 			DWORD cBytesTransfered,			// number of bytes transferred
@@ -111,6 +117,13 @@ namespace watch {
 			request->GetWorker()->AddDirectory(request);
 		}
 
+		/// Called by QueueUserAPC to remove a directory.
+		static void CALLBACK RemoveDirectoryProc(__in ULONG_PTR arg)
+		{
+			Request *request = (Request *) arg;
+			request->GetWorker()->RemoveDirectory(request);
+		}
+
 		///
 		inline DirectoryChanges * GetParent()
 		{
@@ -143,6 +156,33 @@ namespace watch {
 			{
 				delete request;
 			}
+		}
+
+		///
+		void RemoveDirectory(Request *remRequest)
+		{
+			// the iterator that points to the request to be removed
+			std::vector<Request*>::iterator itReq = m_requests.end();
+
+			for (std::vector<Request*>::iterator it = m_requests.begin(); it != m_requests.end(); ++it)
+			{
+				if (0 == _wcsicmp((*it)->GetDirectoryName().c_str(), remRequest->GetDirectoryName().c_str()))
+				{
+					itReq = it;
+					break;
+				}
+			}
+
+			//
+			if (itReq != m_requests.end())
+			{
+				::InterlockedDecrement(&((*itReq)->GetWorker()->m_nRequests));
+				(*itReq)->RequestTermination();
+			}
+
+			//
+			delete remRequest;
+			m_requests.erase(itReq);
 		}
 
 		///
@@ -182,6 +222,9 @@ namespace watch {
 		///
 		void AddDirectory(const std::wstring &, bool watchSubtree, 
 			DWORD notifFilter, DWORD buffSize = 16384);
+
+		///
+		void RemoveDirectory(const std::wstring &);
 
 		///
 		HANDLE GetWaitHandle()

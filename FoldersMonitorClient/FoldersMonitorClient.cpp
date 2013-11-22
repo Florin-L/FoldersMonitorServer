@@ -139,11 +139,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	//t.join();
 	//::SysFreeString(taskId);
 
-	std::wcout << L"waiting ..." << std::endl;
+	std::wcout << L"Press any key to stop task #" << _bstr_t(taskId, false) << std::endl;
 	getc(stdin);
 
 	error = 0;
 	hr = pFoldersMonitor->StopTask(taskId, &error);
+	_ASSERT(SUCCEEDED(hr) && !error);
+
+	std::wcout << L"task " << _bstr_t(taskId, false) << " was stopped !" << std::endl;
+
+	std::wcout << L"Press any key to stop the remaining task." << std::endl;
+	getc(stdin);
+
+	error = 0;
+	hr = pFoldersMonitor->StopTask(taskId1, &error);
 	_ASSERT(SUCCEEDED(hr) && !error);
 
 	//

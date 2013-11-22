@@ -470,12 +470,13 @@ STDMETHODIMP CoFoldersMonitor::StopTask(__in BSTR taskId, __out int *error)
 		com::Trace(L"[%s] : task %s can not be halted (there is no task with the given ID)\n",
 			__FUNCTIONW__, (const wchar_t *) bstrTaskId);
 
-
 		return S_FALSE;
 	}
 
 	Task *task = it->second;
 	_ASSERT(task != nullptr);
+
+	m_watcher->RemoveDirectory(task->folderName);
 
 	task->running = false;
 	set_error(error, 0);

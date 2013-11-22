@@ -201,6 +201,21 @@ namespace watch {
 	}
 
 	///
+	void DirectoryChanges::RemoveDirectory(const std::wstring & dirName)
+	{
+		if (!m_hThread)
+			return;
+
+		Request *remRequest = new Request(m_worker,
+			dirName,
+			false,
+			0,
+			0);
+
+		::QueueUserAPC(Worker::RemoveDirectoryProc, m_hThread, (ULONG_PTR) remRequest);
+	}
+
+	///
 	bool DirectoryChanges::Pop(DWORD & action, std::wstring & fileName)
 	{
 		DirectoryChangeNotification pair;
