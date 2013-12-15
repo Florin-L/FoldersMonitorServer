@@ -77,10 +77,10 @@ namespace watch {
 	};
 
 	////////////////////////////////////////////////////////////////////////////////
-	/// ReadChangesServer
+	/// Worker
 	///
-	/// All functions in ReadChangesServer run in the context of the worker thread.
-	/// One instance of this object is allocated for each instance of ReadDirectoryChanges.
+	/// All functions in DirectoryChanges run in the context of the worker thread.
+	/// One instance of this object is allocated for each instance of DirectoryChanges.
 	/// This class is responsible for thread startup, orderly thread shutdown, and shimming
 	/// the various C++ member functions with C-style Win32 functions.
 
@@ -238,7 +238,7 @@ namespace watch {
 		void Push(DWORD action, const std::wstring &fileName);
 
 		///
-		/// Check if the queue overflowed. If so, clear it and return true.
+		/// Check if the queue is overflowed. If so, clear it and return true.
 		bool CheckOverflow()
 		{
 			bool b = m_notifications.IsOverflow();
